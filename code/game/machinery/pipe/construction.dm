@@ -103,7 +103,7 @@ GLOBAL_LIST_INIT(pipeID2State, list(
 	"[PIPE_MVALVE]"			 = "mvalve", \
 	"[PIPE_DVALVE]"			 = "dvalve", \
 	\
-	"[PIPE_GAS_FILTER]"		 = "filter", \
+	"[PIPE_GAS_FILTER]"		 = "mfilte", \
 	"[PIPE_GAS_MIXER]"		 = "mixer", \
 ))
 
@@ -131,7 +131,7 @@ GLOBAL_LIST_INIT(pipeID2State, list(
 		"[PIPE_MVALVE]" 		= "manual valve", \
 		"[PIPE_DVALVE]" 		= "digital valve", \
 		\
-		"[PIPE_GAS_FILTER]" 	= "gas filter", \
+		"[PIPE_GAS_FILTER]" 	= "gas mfilte", \
 		"[PIPE_GAS_MIXER]" 		= "gas mixer", \
 		)
 	//fix_pipe_type()

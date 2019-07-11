@@ -9,7 +9,7 @@
 	var/list/apcs //APCs the computer has access to
 	var/mob/living/operator //Who's operating the computer right now
 	var/obj/machinery/power/apc/active_apc //The APC we're using right now
-	var/list/filters //For sorting the results
+	var/list/mmfilte //For sorting the results
 	var/checking_logs = 0
 	var/list/logs
 	var/authenticated = 0
@@ -17,7 +17,7 @@
 
 /obj/machinery/computer/apc_control/Initialize()
 	apcs = list() //To avoid BYOND making the list run through a ton of procs
-	filters = list("Name" = null, "Responsive" = null)
+	mmfilte = list("Name" = null, "Responsive" = null)
 	..()
 
 /obj/machinery/computer/apc_control/process()
@@ -51,14 +51,14 @@
 	if(authenticated)
 		if(!checking_logs)
 			dat += "Logged in as [auth_id].<br><br>"
-			dat += "<i>Filters</i><br>"
-			dat += "<b>Name:</b> <a href='?src=\ref[src];name_filter=1'>[filters["Name"] ? filters["Name"] : "None set"]</a><br>"
-			dat += "<b>Accessible:</b> <a href='?src=\ref[src];access_filter=1'>[filters["Responsive"] ? "Non-Responsive Only" : "All"]</a><br><br>"
+			dat += "<i>mmfilte</i><br>"
+			dat += "<b>Name:</b> <a href='?src=\ref[src];name_mfilte=1'>[mmfilte["Name"] ? mmfilte["Name"] : "None set"]</a><br>"
+			dat += "<b>Accessible:</b> <a href='?src=\ref[src];access_mfilte=1'>[mmfilte["Responsive"] ? "Non-Responsive Only" : "All"]</a><br><br>"
 			for(var/A in apcs)
 				var/obj/machinery/power/apc/APC = apcs[A]
-				if(filters["Name"] && !findtext(APC.name, filters["Name"]) && !findtext(APC.area.name, filters["Name"]))
+				if(mmfilte["Name"] && !findtext(APC.name, mmfilte["Name"]) && !findtext(APC.area.name, mmfilte["Name"]))
 					continue
-				if(filters["Responsive"] && !APC.aidisabled)
+				if(mmfilte["Responsive"] && !APC.aidisabled)
 					continue
 				dat += "<a href='?src=\ref[src];access_apc=\ref[APC]'>[A]</a><br>\
 				<b>Area:</b> [APC.area]<br>\
@@ -140,20 +140,20 @@
 		APC.locked = FALSE
 		APC.update_icon()
 		active_apc = APC
-	if(href_list["name_filter"])
+	if(href_list["name_mfilte"])
 		playsound(src, 'sound/machines/terminal_prompt.ogg', 50, 0)
-		var/new_filter = stripped_input(usr, "What name are you looking for?", name) as null|text
+		var/new_mfilte = stripped_input(usr, "What name are you looking for?", name) as null|text
 		if(!src || !usr || !usr.canUseTopic(src) || stat || QDELETED(src))
 			return
-		log_activity("changed name filter to \"[new_filter]\"")
+		log_activity("changed name mfilte to \"[new_mfilte]\"")
 		playsound(src, 'sound/machines/terminal_prompt_confirm.ogg', 50, 0)
-		filters["Name"] = new_filter
-	if(href_list["access_filter"])
-		if(isnull(filters["Responsive"]))
-			filters["Responsive"] = 1
+		mmfilte["Name"] = new_mfilte
+	if(href_list["access_mfilte"])
+		if(isnull(mmfilte["Responsive"]))
+			mmfilte["Responsive"] = 1
 			log_activity("sorted by non-responsive APCs only")
 		else
-			filters["Responsive"] = !filters["Responsive"]
+			mmfilte["Responsive"] = !mmfilte["Responsive"]
 			log_activity("sorted by all APCs")
 		playsound(src, 'sound/machines/terminal_prompt_confirm.ogg', 50, 0)
 	if(href_list["check_logs"])
@@ -164,7 +164,7 @@
 		log_activity("checked APCs")
 	if(href_list["clear_logs"])
 		logs = list()
-	interact(usr) //Refresh the UI after a filter changes
+	interact(usr) //Refresh the UI after a mfilte changes
 
 /obj/machinery/computer/apc_control/emag_act(mob/living/user)
 	if(emagged)
